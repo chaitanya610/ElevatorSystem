@@ -10,9 +10,9 @@ Designing and implementing an elevator system using a .NET console application
 
 # Classes and Interfaces
 
-**ElevatorSystem** - Main entry class which handles the entire elevator ecosystem
-**Elevator** - Elevator instance
-**PassengerRequest** - A request to elevator by a passenger
-**Direction** - Enum with values Up, Down
+**ElevatorSystem** - Main entry class which handles the entire elevator ecosystem.
+**Elevator** - Elevator instance.
+**PassengerRequest** - A request to elevator by a passenger.
+**Direction** - Enum with values Up, Down.
 
 **IElevatorAssignmentStrategy** - Implementation to take care of passenger requests
