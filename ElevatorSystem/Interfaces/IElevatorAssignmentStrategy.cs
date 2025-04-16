@@ -7,6 +7,6 @@ namespace ElevatorSystem.Interfaces
 {
     public interface IElevatorAssignmentStrategy
     {
-        int AssignElevator(List<Elevator> elevators, PassengerRequest passengerRequest, int totalFloors);
+        Elevator AssignElevator(List<Elevator> elevators, PassengerRequest passengerRequest, int totalFloors);
     }
 }
