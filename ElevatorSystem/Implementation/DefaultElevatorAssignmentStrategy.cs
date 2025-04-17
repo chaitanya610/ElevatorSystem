@@ -1,14 +1,17 @@
 ﻿using ElevatorSystem.Interfaces;
 using ElevatorSystem.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ElevatorSystem.Implementation
 {
     public class DefaultElevatorAssignmentStrategy : IElevatorAssignmentStrategy
     {
+        // First, try to assign any moving elevator which is going in same director and approaching the request's current floor.
+        // This will save resources, no need to restart new elevator for every request.
         public Elevator AssignElevator(List<Elevator> elevators, PassengerRequest passengerRequest, int totalFloors)
         {
-            var suitableElevators = GetAllSuitableElevators(elevators, passengerRequest);
+            var suitableElevators = GetAllSuitableMovingElevators(elevators, passengerRequest);
 
             foreach (var elevator in suitableElevators)
             {
@@ -18,9 +21,11 @@ namespace ElevatorSystem.Implementation
                 }
             }
 
-            return null;
+            // No moving elevator is found suitable. Return an idle elevator or null if none
+            return elevators.FirstOrDefault(elevator => elevator.IsIdle());
         }
 
+        // Using a hash table to check if at any floor if the elevator exceeds maximum capacity
         private static bool IsWithinCapacity(Elevator elevator, PassengerRequest passengerRequest, int totalFloors)
         {
             var capacityRecord = new int[totalFloors + 1];
@@ -49,11 +54,11 @@ namespace ElevatorSystem.Implementation
 
 
 
-        // Get all elevators going via requested floor to destination floor and elevators in idle state
-        private static List<Elevator> GetAllSuitableElevators(List<Elevator> elevators, PassengerRequest request)
+        // Get all elevators going via requested floor to destination floor
+        private static List<Elevator> GetAllSuitableMovingElevators(List<Elevator> elevators, PassengerRequest request)
         {
             var requestedDirection = RequestManagementUtility.GetDirection(request.CurrentFloor, request.DestinationFloor);
-            return elevators.FindAll(elevator => elevator.IsIdle() || (elevator.Direction == requestedDirection && elevator.IsApproaching(request.CurrentFloor)));
+            return elevators.FindAll(elevator => elevator.Direction == requestedDirection && elevator.IsApproaching(request.CurrentFloor));
         }
     }
 }
